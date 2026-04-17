@@ -2,14 +2,51 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { BookOpen, Camera, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { sendOtpApi, verifyOtpApi, registerApi } from "../api/auth";
 
 const Register = () => {
     const navigate = useNavigate();
 
+    const [password, setPassword] = useState("");
     const [step, setStep] = useState(1);
     const [input, setInput] = useState("");
     const [otp, setOtp] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+
+    const handleSendOtp = async () => {
+        try {
+            await sendOtpApi(input);
+            alert("OTP sent!");
+            setStep(2);
+        } catch (err) {
+            alert("Failed to send OTP");
+        }
+    };
+
+    const handleVerifyOtp = async () => {
+        try {
+            await verifyOtpApi(input, otp);
+            alert("OTP verified!");
+            setStep(3);
+        } catch (err) {
+            alert("Invalid OTP");
+        }
+    };
+
+    const handleRegister = async () => {
+        try {
+            const res = await registerApi(input, password);
+
+            // store token
+            localStorage.setItem("token", res.data.token);
+
+            alert("Account created!");
+
+            navigate("/dashboard"); // redirect
+        } catch (err) {
+            alert("Registration failed");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#e8ded2] flex items-center justify-center px-6 py-10 relative overflow-hidden">
@@ -62,21 +99,21 @@ const Register = () => {
                         <>
                             <div>
                                 <p className="text-xs tracking-widest text-gray-400 mb-2">
-                                    ENTER EMAIL OR PHONE
+                                    ENTER EMAIL
                                 </p>
                                 <input
                                     type="text"
-                                    placeholder="example@email.com or 9876543210"
+                                    placeholder="example@email.com"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1"
+                                    className="w-full bg-transparent border-b border-gray-300 text-black focus:outline-none focus:border-[#8b3a3a] py-1"
                                 />
                             </div>
 
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => setStep(2)}
+                                onClick={handleSendOtp}
                                 className="w-full bg-[#8b3a3a] text-white py-3 rounded shadow-md"
                             >
                                 SEND OTP
@@ -110,7 +147,7 @@ const Register = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => setStep(3)}
+                                onClick={handleVerifyOtp}
                                 className="w-full bg-[#8b3a3a] text-white py-3 rounded shadow-md"
                             >
                                 VERIFY OTP
@@ -130,6 +167,8 @@ const Register = () => {
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                         className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1 pr-8"
                                     />
 
@@ -146,6 +185,7 @@ const Register = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="w-full bg-[#8b3a3a] text-white py-3 rounded shadow-md"
+                                onClick={handleRegister}
                             >
                                 CREATE VAULT
                             </motion.button>

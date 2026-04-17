@@ -1,97 +1,147 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { BookOpen } from "lucide-react";
 
-export default function Hero() {
-    const navigate = useNavigate();
+const Hero = () => {
     return (
-        <div className="min-h-screen bg-[#e9dfd6] font-serif relative overflow-hidden ">
-            {/* Navbar */}
-            <div className="flex justify-between items-center px-10 py-6">
-                <h1 className="text-2xl italic font-semibold text-gray-800">
+        <div className="bg-[#e8ded2] min-h-screen">
+
+            {/* NAVBAR */}
+            <div className="w-full flex items-center justify-between px-10 py-5 bg-[#ebe3d7] shadow-sm">
+                <h1 className="font-serif text-xl text-[#2d2d2d]">
                     Memory Vault
                 </h1>
 
-                <div className="hidden md:flex gap-10 text-gray-600">
-                    <a href="#" className="hover:text-black transition">Explore</a>
-                    <a href="#archive" className="hover:text-black transition">Archive</a>
-                    <a href="#our-story" className="hover:text-black transition">Our Story</a>
+                <div className="hidden md:flex gap-8 text-sm text-gray-600">
+                    <span className="cursor-pointer hover:text-black">Explore</span>
+                    <span className="cursor-pointer hover:text-black">Archive</span>
+                    <span className="cursor-pointer hover:text-black">Our Story</span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="text-gray-600 hover:text-black transition">
-                        Login
-                    </button>
-                    <button className="bg-[#8b3a3a] hover:bg-[#6f2d2d] transition-all duration-300 text-white px-6 py-2 rounded-lg shadow-md">
+                    <span className="text-sm cursor-pointer">Login</span>
+
+                    <button className="bg-[#8b3a3a] text-white px-5 py-2 rounded">
                         Create Your Vault
                     </button>
                 </div>
             </div>
 
-            {/* Hero Section */}
-            <div className="grid md:grid-cols-2 gap-10 items-center px-10 mt-10">
-                {/* Left Content */}
-                <div className="animate-fadeIn">
-                    <span className="bg-green-100 text-green-800 px-3 py-1 text-sm rounded-md">
+            {/* HERO */}
+            <section className="px-10 md:px-20 py-16 grid md:grid-cols-2 items-center">
+
+                {/* LEFT */}
+                <div>
+
+                    {/* Tag */}
+                    <span className="bg-[#dce5d3] text-[#5a6b4d] text-xs px-4 py-1 tracking-widest">
                         EST. 1994 • YOUR LEGACY
                     </span>
 
-                    <h2 className="text-6xl md:text-7xl font-bold text-[#8b3a3a] mt-6 leading-tight">
-                        Your <br /> Memories, <br /> Preserved <br /> Forever ❤️
-                    </h2>
+                    {/* Heading */}
+                    <h1 className="mt-6 text-6xl md:text-7xl font-serif text-[#8b3a3a] leading-tight">
+                        Your <br />
+                        Memories, <br />
+                        Preserved <br />
+                        Forever{" "}
+                        <motion.span
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                            className="inline-block"
+                        >
+                            ❤️
+                        </motion.span>
+                    </h1>
 
-                    <p className="text-gray-600 mt-6 max-w-md">
-                        Preserving your most precious photos, videos, and moments in a
-                        digital heirloom that transcends generations.
+                    {/* Description */}
+                    <p className="mt-6 text-gray-600 max-w-md">
+                        Preserving your most precious photos, videos, and moments
+                        in a digital heirloom that transcends generations.
                     </p>
 
-                    <div className="flex gap-4 mt-8">
-                        <button className="bg-[#8b3a3a] hover:scale-105 transition-all duration-300 text-white px-6 py-3 rounded-lg shadow-lg">
-                            Create Your Vault
-                        </button>
+                    {/* Buttons */}
+                    <div className="flex items-center gap-4 mt-8">
 
-                        <button className="relative group border text-[#8b3a3a] px-6 py-3 rounded-lg bg-white shadow overflow-hidden">
-                            <span className="relative z-10 group-hover:text-white transition">
-                                Explore
-                            </span>
-                            <span className="absolute inset-0 bg-[#8b3a3a] translate-y-full group-hover:translate-y-0 transition-all duration-300"></span>
-                        </button>
+                        {/* Create Vault */}
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            className="relative bg-[#8b3a3a] text-white px-6 py-3 rounded shadow-md"
+                        >
+                            Create Your Vault
+
+                            {/* Dot */}
+                            <span className="absolute -right-2 -top-2 w-4 h-4 border-2 border-[#8b3a3a] rounded-full bg-[#e8ded2]"></span>
+                        </motion.button>
+
+                        {/* Explore */}
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            className="flex items-center gap-2 border border-gray-300 px-5 py-3 bg-white shadow-sm"
+                        >
+                            <BookOpen size={16} />
+                            Explore
+                        </motion.button>
+
                     </div>
                 </div>
 
-                {/* Right Images */}
-                <div className="relative h-[520px]">
-                    {/* Right Top */}
-                    <img
-                        src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
-                        className="absolute right-10 top-0 w-40 rotate-6 shadow-xl border-8 border-white transition-transform duration-500 hover:scale-105"
-                    />
+                {/* RIGHT IMAGES */}
+                <div className="relative flex justify-center mt-10 md:mt-0">
 
-                    {/* Middle (Hover Move) */}
-                    <img
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
-                        className="absolute right-40 top-40 w-40 -rotate-3 shadow-xl border-8 border-white transition-all duration-500 hover:-translate-y-6 hover:rotate-0 hover:scale-110 z-10"
-                    />
+                    {/* Floating Icon */}
+                    <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 6, repeat: Infinity }}
+                        className="absolute top-10 left-1/2 text-[#8b3a3a]"
+                    >
+                        💠
+                    </motion.div>
 
-                    {/* Bottom */}
-                    <img
-                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-                        className="absolute bottom-0 right-52 w-44 rotate-3 shadow-lg border-8 border-white transition-transform duration-500 hover:scale-105"
-                    />
+                    {/* Image 1 */}
+                    <motion.div
+                        whileHover={{ rotate: 15, scale: 1.1 }}
+                        className="absolute top-0 right-10 rotate-[10deg]"
+                    >
+                        <div className="bg-white p-2 shadow-xl">
+                            <img
+                                src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+                                className="w-40 h-52 object-cover"
+                            />
+                        </div>
+                    </motion.div>
+
+                    {/* Image 2 (Main) */}
+                    <motion.div
+                        whileHover={{ scale: 1.1, y: -10 }}
+                        className="rotate-[-2deg] z-10"
+                    >
+                        <div className="bg-white p-2 shadow-2xl">
+                            <img
+                                src="https://images.unsplash.com/photo-1492724441997-5dc865305da7"
+                                className="w-52 h-64 object-cover"
+                            />
+                            <p className="text-center text-xs mt-2 text-gray-600">
+                                Summer of ‘98
+                            </p>
+                        </div>
+                    </motion.div>
+
+                    {/* Image 3 */}
+                    <motion.div
+                        whileHover={{ rotate: -15, scale: 1.1 }}
+                        className="absolute bottom-0 left-10 rotate-[-10deg]"
+                    >
+                        <div className="bg-white p-2 shadow-lg">
+                            <img
+                                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                                className="w-36 h-44 object-cover"
+                            />
+                        </div>
+                    </motion.div>
+
                 </div>
-            </div>
-
-            {/* Tailwind Custom Animation */}
-            <style>
-                {`@keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 1s ease forwards;
-        }`}
-            </style>
+            </section>
         </div>
     );
-}
+};
+
+export default Hero;
