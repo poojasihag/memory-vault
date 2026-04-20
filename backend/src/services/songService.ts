@@ -1,12 +1,13 @@
 import axios from "axios";
 
-interface DeezerTrack {
-    id: number;
-    title: string;
-    artist: { name: string };
-    album: { title: string; cover_medium: string };
-    preview: string; // 30-second preview URL
-    duration: number;
+interface iTunesTrack {
+    trackId: number;
+    trackName: string;
+    artistName: string;
+    collectionName: string;
+    artworkUrl100: string;
+    previewUrl: string; // 30-second preview URL (.m4a)
+    trackTimeMillis: number;
 }
 
 interface SongResult {
@@ -24,19 +25,26 @@ export const searchSongs = async (query: string): Promise<SongResult[]> => {
         return [];
     }
 
-    const response = await axios.get(`https://api.deezer.com/search`, {
-        params: { q: query, limit: 10 },
+    const response = await axios.get(`https://itunes.apple.com/search`, {
+        params: {
+            term: query,
+            media: "music",
+            entity: "song",
+            limit: 10,
+        },
     });
 
-    const tracks: DeezerTrack[] = response.data.data || [];
+    const tracks: iTunesTrack[] = (response.data.results || []).filter(
+        (item: iTunesTrack) => item.previewUrl
+    );
 
     return tracks.map((track) => ({
-        id: track.id,
-        title: track.title,
-        artist: track.artist.name,
-        album: track.album.title,
-        coverUrl: track.album.cover_medium,
-        previewUrl: track.preview,
-        duration: track.duration,
+        id: track.trackId,
+        title: track.trackName,
+        artist: track.artistName,
+        album: track.collectionName || "Unknown Album",
+        coverUrl: track.artworkUrl100,
+        previewUrl: track.previewUrl,
+        duration: Math.round((track.trackTimeMillis || 0) / 1000),
     }));
 };
