@@ -2,10 +2,35 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Camera, Eye, EyeOff } from "lucide-react";
+import { loginApi } from "../api/auth";
+import { useAuthStore } from "../stores/authStore";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const navigate = useNavigate();
+    const { setAuth } = useAuthStore();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            toast.error("Please fill in all fields");
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await loginApi(email, password);
+            setAuth(res.data.token, res.data.user);
+            toast.success("Welcome back!");
+            navigate("/dashboard");
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || "Login failed");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#e8ded2] flex items-center justify-center px-6 py-10 relative overflow-hidden">
@@ -64,12 +89,14 @@ const Login = () => {
                     {/* Email */}
                     <div>
                         <p className="text-xs tracking-widest text-gray-400 mb-2">
-                            THE CUSTODIAN’S IDENTITY (EMAIL)
+                            THE CUSTODIAN'S IDENTITY (EMAIL)
                         </p>
                         <input
                             type="email"
                             placeholder="curator@memoryvault.com"
-                            className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1 transition"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1 transition text-[#2d2d2d]"
                         />
                     </div>
 
@@ -83,7 +110,10 @@ const Login = () => {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
-                                className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1 pr-8 transition"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                                className="w-full bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8b3a3a] py-1 pr-8 transition text-[#2d2d2d]"
                             />
 
                             {/* Eye Icon */}
@@ -98,6 +128,7 @@ const Login = () => {
                         {/* Forgot */}
                         <motion.p
                             whileHover={{ scale: 1.05 }}
+                            onClick={() => navigate("/forgot-password")}
                             className="text-right text-xs text-gray-400 mt-1 cursor-pointer hover:text-[#8b3a3a] transition"
                         >
                             Misplaced your key?
@@ -108,9 +139,11 @@ const Login = () => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-full bg-[#8b3a3a] text-white py-3 mt-4 rounded shadow-md tracking-wide"
+                        onClick={handleLogin}
+                        disabled={loading}
+                        className="w-full bg-[#8b3a3a] text-white py-3 mt-4 rounded shadow-md tracking-wide disabled:opacity-50"
                     >
-                        🔒 OPEN YOUR VAULT
+                        {loading ? "Opening..." : "🔒 OPEN YOUR VAULT"}
                     </motion.button>
 
                     {/* Terms */}

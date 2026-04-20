@@ -8,6 +8,7 @@ import { sendEmail } from "../config/mail.js";
 
 export const sendRegistrationOtp = async (email: string) => {
     const existingUser = await prisma.user.findUnique({ where: { email } });
+    
     if (existingUser && existingUser.isVerified && existingUser.password) {
         throw { statusCode: 400, message: "User already exists & verified" };
     }
@@ -59,7 +60,7 @@ export const verifyUserOtp = async (email: string, otp: string) => {
     return { message: "OTP verified successfully" };
 };
 
-export const registerVault = async (email: string, password: string) => {
+export const registerVault = async (email: string, password: string, name?: string) => {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -78,7 +79,7 @@ export const registerVault = async (email: string, password: string) => {
 
     const updatedUser = await prisma.user.update({
         where: { email },
-        data: { password: hashedPassword },
+        data: { password: hashedPassword, name: name || null },
     });
 
     const token = jwt.sign(
@@ -87,7 +88,16 @@ export const registerVault = async (email: string, password: string) => {
         { expiresIn: "7d" }
     );
 
-    return { message: "Account setup successful", token };
+    return {
+        message: "Account setup successful",
+        token,
+        user: {
+            id: updatedUser.id,
+            email: updatedUser.email,
+            name: updatedUser.name,
+            avatarUrl: updatedUser.avatarUrl,
+        },
+    };
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -112,5 +122,68 @@ export const loginUser = async (email: string, password: string) => {
         { expiresIn: "7d" }
     );
 
-    return { message: "Login successful", token };
+    return {
+        message: "Login successful",
+        token,
+        user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            avatarUrl: user.avatarUrl,
+        },
+    };
+};
+
+// Forgot Password — send OTP to email
+export const forgotPassword = async (email: string) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !user.isVerified || !user.password) {
+        throw { statusCode: 404, message: "No registered account found with this email" };
+    }
+
+    const otp = generateOtp();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    await prisma.user.update({
+        where: { email },
+        data: { otp, otpExpiry },
+    });
+
+    const emailHtml = `
+        <div style="font-family: sans-serif; padding: 20px;">
+            <h2>Memory Vault — Password Reset</h2>
+            <p>Your password reset OTP is: <strong>${otp}</strong></p>
+            <p>This OTP will expire in 10 minutes.</p>
+        </div>
+    `;
+    await sendEmail(email, "Password Reset OTP - Memory Vault", `Your OTP is ${otp}`, emailHtml);
+
+    return { message: "Password reset OTP sent to email" };
+};
+
+// Reset Password — verify OTP and set new password
+export const resetPassword = async (email: string, otp: string, newPassword: string) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+        throw { statusCode: 404, message: "User not found" };
+    }
+
+    if (user.otp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
+        throw { statusCode: 400, message: "Invalid or expired OTP" };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+        where: { email },
+        data: {
+            password: hashedPassword,
+            otp: null,
+            otpExpiry: null,
+        },
+    });
+
+    return { message: "Password reset successful" };
 };

@@ -8,12 +8,48 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  password     String?
-  otp          String?
-  otpExpiry    DateTime?
-  isVerified   Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  email      String    @unique
+  name       String?
+  avatarUrl  String?
+  bio        String?
+  password   String?
+  otp        String?
+  otpExpiry  DateTime?
+  isVerified Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  albums     Album[]
+}
+
+model Album {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  date        DateTime?
+  songUrl     String?
+  songTitle   String?
+  songArtist  String?
+  songCover   String?
+  isFavorite  Boolean   @default(false)
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  coverUrl    String?
+  templateId  String?
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  images      Image[]
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  publicId  String
+  caption   String?
+  order     Int      @default(0)
+  albumId   String
+  createdAt DateTime @default(now())
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://localhost:5000/api/auth"
+    baseURL: "http://localhost:8000/api/auth",
 });
 
 // SEND OTP
@@ -15,6 +15,21 @@ export const verifyOtpApi = (email: string, otp: string) => {
 };
 
 // REGISTER
-export const registerApi = (email: string, password: string) => {
-    return API.post("/register", { email, password });
-};
+export const registerApi = (email: string, password: string, name?: string) => {
+    return API.post("/register", { email, password, name });
+};
+
+// LOGIN
+export const loginApi = (email: string, password: string) => {
+    return API.post("/login", { email, password });
+};
+
+// FORGOT PASSWORD
+export const forgotPasswordApi = (email: string) => {
+    return API.post("/forgot-password", { email });
+};
+
+// RESET PASSWORD
+export const resetPasswordApi = (email: string, otp: string, newPassword: string) => {
+    return API.post("/reset-password", { email, otp, newPassword });
+};
