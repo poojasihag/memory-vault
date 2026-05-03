@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Hero = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="bg-[#e8ded2] min-h-screen">
 
@@ -18,9 +21,12 @@ const Hero = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <span className="text-sm cursor-pointer">Login</span>
+                    <Link to="/login" className="text-sm cursor-pointer hover:text-[#8b3a3a] transition-colors">Login</Link>
 
-                    <button className="bg-[#8b3a3a] text-white px-5 py-2 rounded">
+                    <button 
+                        onClick={() => navigate('/register')}
+                        className="bg-[#8b3a3a] text-white px-5 py-2 rounded hover:bg-[#7a3232] transition-colors"
+                    >
                         Create Your Vault
                     </button>
                 </div>
@@ -63,8 +69,9 @@ const Hero = () => {
 
                         {/* Create Vault */}
                         <motion.button
+                            onClick={() => navigate('/register')}
                             whileHover={{ scale: 1.05 }}
-                            className="relative bg-[#8b3a3a] text-white px-6 py-3 rounded shadow-md"
+                            className="relative bg-[#8b3a3a] text-white px-6 py-3 rounded shadow-md hover:bg-[#7a3232] transition-colors"
                         >
                             Create Your Vault
 
@@ -75,7 +82,7 @@ const Hero = () => {
                         {/* Explore */}
                         <motion.button
                             whileHover={{ scale: 1.05 }}
-                            className="flex items-center gap-2 border border-gray-300 px-5 py-3 bg-white shadow-sm"
+                            className="flex items-center gap-2 border border-gray-300 px-5 py-3 bg-white shadow-sm hover:bg-gray-50 transition-colors"
                         >
                             <BookOpen size={16} />
                             Explore

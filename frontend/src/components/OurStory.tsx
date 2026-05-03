@@ -1,6 +1,8 @@
-
+import { useNavigate } from "react-router-dom";
 
 export default function OurStory() {
+    const navigate = useNavigate();
+
     return (
         <div
             id="our-story"
@@ -28,7 +30,10 @@ export default function OurStory() {
 
             {/* Button */}
             <div className="mt-10 animate-fadeIn">
-                <button className="bg-[#8b3a3a] hover:scale-105 transition-all duration-300 text-white px-8 py-4 rounded-lg shadow-lg text-lg flex items-center gap-2 mx-auto">
+                <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-[#8b3a3a] hover:bg-[#7a3232] hover:scale-105 transition-all duration-300 text-white px-8 py-4 rounded-lg shadow-lg text-lg flex items-center gap-2 mx-auto"
+                >
                     Open Your Vault →
                 </button>
             </div>
