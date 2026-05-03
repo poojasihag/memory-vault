@@ -1,0 +1,49 @@
+service: memory-vault-backend
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  stage: dev
+  timeout: 30
+  memorySize: 512
+  environment:
+    NODE_ENV: production
+    DATABASE_URL: ${env:DATABASE_URL}
+    JWT_SECRET: ${env:JWT_SECRET}
+    CORS_ORIGIN: ${env:CORS_ORIGIN}
+    ACCESS_TOKEN_EXPIRY: ${env:ACCESS_TOKEN_EXPIRY}
+    REFRESH_TOKEN_SECRET: ${env:REFRESH_TOKEN_SECRET}
+    REFRESH_TOKEN_EXPIRY: ${env:REFRESH_TOKEN_EXPIRY}
+    CLOUDINARY_CLOUD_NAME: ${env:CLOUDINARY_CLOUD_NAME}
+    CLOUDINARY_API_KEY: ${env:CLOUDINARY_API_KEY}
+    CLOUDINARY_API_SECRET: ${env:CLOUDINARY_API_SECRET}
+    SMTP_HOST: ${env:SMTP_HOST}
+    SMTP_PORT: ${env:SMTP_PORT}
+    SMTP_USER: ${env:SMTP_USER}
+    SMTP_PASS: ${env:SMTP_PASS}
+    SMTP_SECURE: ${env:SMTP_SECURE}
+
+functions:
+  api:
+    handler: dist/server.handler
+    events:
+      - httpApi: '*'
+
+package:
+  individually: true
+  patterns:
+    - "!src/**"
+    - "!.env"
+    - "!tsconfig.json"
+    - "!.serverless/**"
+    - "!node_modules/.prisma/client/libquery_engine-*"
+    - "!node_modules/.prisma/client/query_engine-*"
+    - "!node_modules/@prisma/engines/**"
+    - "node_modules/.prisma/client/libquery_engine-rhel-*"
+    - "node_modules/.prisma/client/**"
+    - "node_modules/@prisma/client/**"
+    - "prisma/**"
+    - "dist/**"
