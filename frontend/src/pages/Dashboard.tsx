@@ -122,6 +122,7 @@ const Dashboard = () => {
                                     onFavoriteToggle={handleFavoriteToggle}
                                     emptyMessage="No memories yet. Create your first album!"
                                     emptyIcon="🍃"
+                                    onAddNew={() => setCreateModalOpen(true)}
                                 />
                             </div>
                         )}
@@ -158,6 +159,7 @@ const Dashboard = () => {
                                 onFavoriteToggle={handleFavoriteToggle}
                                 emptyMessage={searchQuery ? "No albums match your search" : "No albums yet"}
                                 emptyIcon={searchQuery ? "🔍" : "📷"}
+                                onAddNew={!searchQuery ? () => setCreateModalOpen(true) : undefined}
                             />
                         )}
                     </div>

@@ -8,6 +8,7 @@ interface AlbumGridProps {
     showTrashBadge?: boolean;
     emptyMessage?: string;
     emptyIcon?: string;
+    onAddNew?: () => void;
 }
 
 const breakpointColumns = {
@@ -25,12 +26,21 @@ const AlbumGrid = ({
     showTrashBadge,
     emptyMessage = "No albums yet",
     emptyIcon = "📷",
+    onAddNew,
 }: AlbumGridProps) => {
     if (albums.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-center">
                 <span className="text-6xl mb-4 opacity-40">{emptyIcon}</span>
-                <p className="text-gray-400 text-lg">{emptyMessage}</p>
+                <p className="text-gray-400 text-lg mb-6">{emptyMessage}</p>
+                {onAddNew && (
+                    <button
+                        onClick={onAddNew}
+                        className="bg-[#8b3a3a] text-white px-6 py-2.5 rounded-lg shadow-md hover:bg-[#7a3232] transition-colors flex items-center gap-2 text-sm font-medium"
+                    >
+                        + Create New Album
+                    </button>
+                )}
             </div>
         );
     }
