@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, FolderOpen, Heart, Grid3X3, Trash2, User, LogOut, RefreshCw, Menu, X, Plus } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Heart, Grid3X3, Trash2, User, LogOut, RefreshCw, X, Plus } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
 import toast from "react-hot-toast";
 

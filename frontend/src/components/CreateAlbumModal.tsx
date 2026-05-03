@@ -28,7 +28,7 @@ const CreateAlbumModal = ({ open, onClose, onCreated }: CreateAlbumModalProps) =
     const [playingPreview, setPlayingPreview] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selected = Array.from(e.target.files || []);
