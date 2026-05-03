@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../config/prisma.js";
 import { generateOtp } from "../utils/sendOtp.js";
-import { sendEmail } from "../config/mail.js";
+import { sendEmail, getHtmlTemplate } from "../config/mail.js";
 
 // Service layer handles business logic
 
@@ -24,14 +24,18 @@ export const sendRegistrationOtp = async (email: string) => {
     });
 
     // Send OTP via Email
-    const emailHtml = `
-        <div style="font-family: sans-serif; padding: 20px;">
-            <h2>Welcome to Memory Vault</h2>
-            <p>Your OTP for registration is: <strong>${otp}</strong></p>
-            <p>This OTP will expire in 10 minutes.</p>
+    const innerContent = `
+        <p style="color: #5c5248; font-size: 16px;">Welcome to Memory Vault! We're thrilled to have you begin your digital heirloom journey.</p>
+        <p style="color: #5c5248; font-size: 16px;">Please use the following One-Time Password (OTP) to verify your registration:</p>
+        
+        <div style="background-color: #e8ded2; padding: 20px; text-align: center; border-radius: 8px; margin: 30px 0;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #8b3a3a; font-family: monospace;">\${otp}</span>
         </div>
+        
+        <p style="color: #7a6a5a; font-size: 14px; font-style: italic;">Note: This code will expire in 10 minutes.</p>
     `;
-    await sendEmail(email, "Your Registration OTP - Memory Vault", `Your OTP is ${otp}`, emailHtml);
+    const emailHtml = getHtmlTemplate("Your Registration OTP", innerContent);
+    await sendEmail(email, "Your Registration OTP - Memory Vault", \`Your OTP is \${otp}\`, emailHtml);
 
     return { message: "OTP sent to email", userId: user.id };
 };
@@ -150,14 +154,18 @@ export const forgotPassword = async (email: string) => {
         data: { otp, otpExpiry },
     });
 
-    const emailHtml = `
-        <div style="font-family: sans-serif; padding: 20px;">
-            <h2>Memory Vault — Password Reset</h2>
-            <p>Your password reset OTP is: <strong>${otp}</strong></p>
-            <p>This OTP will expire in 10 minutes.</p>
+    const innerContent = `
+        <p style="color: #5c5248; font-size: 16px;">We received a request to reset your password for your Memory Vault account.</p>
+        <p style="color: #5c5248; font-size: 16px;">Please use the following One-Time Password (OTP) to proceed with your password reset:</p>
+        
+        <div style="background-color: #e8ded2; padding: 20px; text-align: center; border-radius: 8px; margin: 30px 0;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #8b3a3a; font-family: monospace;">\${otp}</span>
         </div>
+        
+        <p style="color: #7a6a5a; font-size: 14px; font-style: italic;">Note: This code will expire in 10 minutes. If you did not request this, please secure your account.</p>
     `;
-    await sendEmail(email, "Password Reset OTP - Memory Vault", `Your OTP is ${otp}`, emailHtml);
+    const emailHtml = getHtmlTemplate("Password Reset OTP", innerContent);
+    await sendEmail(email, "Password Reset OTP - Memory Vault", \`Your OTP is \${otp}\`, emailHtml);
 
     return { message: "Password reset OTP sent to email" };
 };
